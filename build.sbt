@@ -7,7 +7,7 @@ lazy val root = (project in file(".")).
       organization    := "io.reinno",
       scalaVersion    := "2.12.5"
     )),
-    name := "jeager-akka-http-sample",
+    name := "jaeger-akka-http-sample",
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,

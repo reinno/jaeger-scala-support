@@ -12,6 +12,8 @@ class UserRoutesSpec extends WordSpec with Matchers with ScalaFutures with Scala
   override val userRegistryActor: ActorRef =
     system.actorOf(UserRegistryActor.props, "userRegistry")
 
+  override val traceConfig: TraceConfig = TraceConfigLocal()
+
   lazy val routes = userRoutes
   "UserRoutes" should {
     "return no users if no present (GET /users)" in {

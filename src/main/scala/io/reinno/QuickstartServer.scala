@@ -13,6 +13,8 @@ object QuickstartServer extends App with UserRoutes {
   implicit val system: ActorSystem = ActorSystem("helloAkkaHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
+  override val traceConfig: TraceConfig = TraceConfigLocal()
+
   val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
 
   lazy val routes: Route = userRoutes
