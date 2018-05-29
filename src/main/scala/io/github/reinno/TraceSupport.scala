@@ -1,4 +1,4 @@
-package io.reinno
+package io.github.reinno
 
 import io.jaegertracing.Tracer
 import io.jaegertracing.reporters.RemoteReporter
@@ -9,7 +9,7 @@ trait TraceSupport {
 
   protected lazy val httpHeaderTag: String = traceConfig.headerTag
   protected lazy val tracer: Tracer =
-    new Tracer.Builder("demo")
+    new Tracer.Builder(traceConfig.serviceName)
       .withReporter(
         new RemoteReporter.Builder()
           .withSender(new UdpSender(traceConfig.address, traceConfig.port, 0))

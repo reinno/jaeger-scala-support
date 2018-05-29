@@ -1,22 +1,20 @@
-package io.reinno
+package io.github.reinno.examples.akkahttp
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
-
-import scala.concurrent.duration._
-import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.MethodDirectives.delete
-import akka.http.scaladsl.server.directives.MethodDirectives.get
-import akka.http.scaladsl.server.directives.MethodDirectives.post
-import akka.http.scaladsl.server.directives.RouteDirectives.complete
+import akka.http.scaladsl.server.directives.MethodDirectives.{ delete, get, post }
 import akka.http.scaladsl.server.directives.PathDirectives.path
-
-import scala.concurrent.{ ExecutionContext, Future }
-import io.reinno.UserRegistryActor._
+import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
+import io.github.reinno.AkkaHttpTraceDirectives
+import io.github.reinno.examples.akkahttp.UserRegistryActor._
+
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait UserRoutes extends JsonSupport with AkkaHttpTraceDirectives {
   implicit def system: ActorSystem

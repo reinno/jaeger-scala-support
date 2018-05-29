@@ -1,18 +1,19 @@
-package io.reinno
+package io.github.reinno.examples.akkahttp
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
+import io.github.reinno.{ TraceConfig, TraceConfigLocal }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ Matchers, WordSpec }
 
 class UserRoutesSpec extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest
-    with UserRoutes {
+  with UserRoutes {
   override val userRegistryActor: ActorRef =
     system.actorOf(UserRegistryActor.props, "userRegistry")
 
-  override val traceConfig: TraceConfig = TraceConfigLocal()
+  override val traceConfig: TraceConfig = TraceConfigLocal("TestSpec")
 
   lazy val routes = userRoutes
   "UserRoutes" should {

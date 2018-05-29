@@ -1,4 +1,4 @@
-package io.reinno
+package io.github.reinno
 
 import io.opentracing.{ Span, Tracer }
 

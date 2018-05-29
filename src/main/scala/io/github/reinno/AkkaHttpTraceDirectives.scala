@@ -1,9 +1,9 @@
-package io.reinno
+package io.github.reinno
 
 import java.util.Collections
 
 import akka.http.scaladsl.model.HttpHeader
-import akka.http.scaladsl.server.RouteResult.Complete
+import akka.http.scaladsl.server.RouteResult.{ Complete, Rejected }
 import akka.http.scaladsl.server._
 import io.opentracing.Tracer.SpanBuilder
 import io.opentracing.propagation.Format.Builtin.HTTP_HEADERS
@@ -11,7 +11,7 @@ import io.opentracing.propagation.TextMapExtractAdapter
 import io.opentracing.tag.Tags
 
 import scala.concurrent.ExecutionContext
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 trait AkkaHttpTraceDirectives extends TraceSupport {
   implicit val exec: ExecutionContext
@@ -42,6 +42,8 @@ trait AkkaHttpTraceDirectives extends TraceSupport {
           span
             .setTag(ExtTags.HTTP_RESPONSE.getKey, result.entity.toString)
             .setTag(ExtTags.HTTP_STATUS_CODE.getKey, result.status.value)
+        case Success(Rejected(result)) =>
+        case Failure(ex) =>
       }
 
       span.finish()
