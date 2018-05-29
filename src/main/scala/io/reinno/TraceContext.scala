@@ -1,5 +1,5 @@
 package io.reinno
 
-import io.opentracing.{ SpanContext, Tracer }
+import io.opentracing.{ Span, Tracer }
 
-case class TraceContext(tracer: Tracer, spanCtx: SpanContext, cfg: TraceConfig)
+case class TraceContext(tracer: Tracer, span: Span, cfg: TraceConfig)

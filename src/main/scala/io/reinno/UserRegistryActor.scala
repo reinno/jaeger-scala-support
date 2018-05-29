@@ -31,7 +31,7 @@ class UserRegistryActor extends Actor with ActorLogging {
   def receive: Receive = {
     case GetUsers(traceCtx) =>
       val span = traceCtx.tracer.buildSpan("getUserFromDb")
-        .asChildOf(traceCtx.spanCtx).start()
+        .asChildOf(traceCtx.span).start()
       sender() ! Users(users.toSeq)
       span.finish()
 

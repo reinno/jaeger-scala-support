@@ -8,6 +8,7 @@ trait TraceConfig {
   val port: Int
   // switch
   // prefix filter
+  // record request/response in route
 }
 
 case class TraceConfigLocal(address: String = "localhost", port: Int = 6831) extends TraceConfig

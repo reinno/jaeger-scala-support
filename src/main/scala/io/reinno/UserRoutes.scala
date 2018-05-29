@@ -18,7 +18,7 @@ import io.reinno.UserRegistryActor._
 import akka.pattern.ask
 import akka.util.Timeout
 
-trait UserRoutes extends JsonSupport with TraceDirectives {
+trait UserRoutes extends JsonSupport with AkkaHttpTraceDirectives {
   implicit def system: ActorSystem
 
   override implicit lazy val exec: ExecutionContext = system.dispatcher
