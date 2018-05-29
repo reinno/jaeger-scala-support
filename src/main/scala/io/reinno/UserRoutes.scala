@@ -20,7 +20,8 @@ import akka.util.Timeout
 
 trait UserRoutes extends JsonSupport with TraceDirectives {
   implicit def system: ActorSystem
-  override implicit lazy val exec : ExecutionContext = system.dispatcher
+
+  override implicit lazy val exec: ExecutionContext = system.dispatcher
 
   lazy val log = Logging(system, classOf[UserRoutes])
 
@@ -28,15 +29,15 @@ trait UserRoutes extends JsonSupport with TraceDirectives {
 
   implicit lazy val timeout = Timeout(5.seconds)
 
-  lazy val userRoutes: Route =
-    withTrace {
+  lazy val userRoutes: Route = withTraceCtx {
+    traceCtx =>
       pathPrefix("users") {
         concat(
           pathEnd {
             concat(
               get {
                 val users: Future[Users] =
-                  (userRegistryActor ? GetUsers).mapTo[Users]
+                  (userRegistryActor ? GetUsers(traceCtx)).mapTo[Users]
                 complete(users)
               },
               post {
@@ -69,5 +70,6 @@ trait UserRoutes extends JsonSupport with TraceDirectives {
               })
           })
       }
-    }
+  }
+
 }

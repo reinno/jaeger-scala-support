@@ -1,7 +1,7 @@
 package io.reinno
 
 trait TraceConfig {
-  val headerTag: String
+  val headerTag: String = "uber-trace-id"
 
   // protocol
   val address: String
@@ -10,8 +10,5 @@ trait TraceConfig {
   // prefix filter
 }
 
-case class TraceConfigLocal(
-  headerTag: String = "uber-trace-id",
-  address: String = "localhost",
-  port: Int = 6831) extends TraceConfig
+case class TraceConfigLocal(address: String = "localhost", port: Int = 6831) extends TraceConfig
 
