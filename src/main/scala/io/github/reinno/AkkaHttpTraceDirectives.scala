@@ -43,6 +43,8 @@ trait AkkaHttpTraceDirectives extends TraceSupport {
             .setTag(ExtTags.HTTP_RESPONSE.getKey, result.entity.toString)
             .setTag(ExtTags.HTTP_STATUS_CODE.getKey, result.status.value)
         case Success(Rejected(result)) =>
+          span
+            .setTag(Tags.ERROR.getKey, result.toString())
         case Failure(ex) =>
       }
 
