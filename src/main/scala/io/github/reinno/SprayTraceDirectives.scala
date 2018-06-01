@@ -16,6 +16,8 @@ import scala.concurrent.ExecutionContext
 trait SprayTraceDirectives extends TraceSupport {
   implicit val exec: ExecutionContext
 
+  import spray.routing.directives.BasicDirectives._
+
   def getSpanBuilder(ctx: RequestContext): SpanBuilder = {
     tracer.buildSpan(ctx.request.uri.path.toString())
       .withTag(Tags.SPAN_KIND.getKey, Tags.SPAN_KIND_SERVER)
@@ -24,20 +26,18 @@ trait SprayTraceDirectives extends TraceSupport {
       .withTag(ExtTags.HTTP_REQUEST.getKey, ctx.request.entity.toString)
   }
 
-  def withTrace: Directive0 = new Directive[HNil] {
-    override def happly(f: HNil => Route): Route = {
-      ctx ⇒
-        val span: Span = getSpan(ctx)
-        f(HNil)(ctx)
-        span.finish()
+  def withTrace: Directive0 =
+    mapInnerRoute {
+      inner ⇒
+        ctx ⇒
+          getSpan(ctx)
+          inner(ctx)
     }
-  }
 
   def withTraceCtx: Directive1[TraceContext] = new Directive1[TraceContext] {
     override def happly(f: shapeless.::[TraceContext, shapeless.HNil] => Route): Route = {
       ctx ⇒
         val span: Span = getSpan(ctx)
-        // Spray does not support call back before send, so need service call finish
         f(TraceContext(tracer, span, traceConfig) :: HNil)(ctx)
     }
   }
@@ -56,6 +56,15 @@ trait SprayTraceDirectives extends TraceSupport {
     val span = parentCtx
       .map(spanBuilder.asChildOf).getOrElse(spanBuilder)
       .start()
+
+    ctx.withHttpResponseMapped {
+      rsp =>
+        span
+          .setTag(ExtTags.HTTP_RESPONSE.getKey, rsp.entity.asString)
+          .setTag(ExtTags.HTTP_STATUS_CODE.getKey, rsp.status.value)
+        span.finish()
+        rsp
+    }
     span
   }
 }
