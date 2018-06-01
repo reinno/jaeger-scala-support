@@ -1,8 +1,6 @@
-package io.github.reinno.examples.akkahttp
+package io.github.reinno
 
-//#user-registry-actor
 import akka.actor.{ Actor, ActorLogging, Props }
-import io.github.reinno.TraceContext
 
 final case class User(name: String, age: Int, countryOfResidence: String)
 

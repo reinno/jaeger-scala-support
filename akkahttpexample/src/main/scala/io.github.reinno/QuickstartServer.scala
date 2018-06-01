@@ -1,10 +1,9 @@
-package io.github.reinno.examples.akkahttp
+package io.github.reinno
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
-import io.github.reinno.{ TraceConfig, TraceConfigLocal }
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -20,10 +19,9 @@ object QuickstartServer extends App with UserRoutes {
 
   lazy val routes: Route = userRoutes
 
-  Http().bindAndHandle(routes, "localhost", 8080)
+  Http().bindAndHandle(routes, "localhost", 9001)
 
-  println(s"Server online at http://localhost:8080/")
+  println(s"Server online at http://localhost:9001/")
 
   Await.result(system.whenTerminated, Duration.Inf)
 }
-

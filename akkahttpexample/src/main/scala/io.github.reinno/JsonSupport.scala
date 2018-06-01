@@ -1,13 +1,11 @@
-package io.github.reinno.examples.akkahttp
+package io.github.reinno
 
-//#json-support
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import io.github.reinno.examples.akkahttp.UserRegistryActor.ActionPerformed
-import spray.json.DefaultJsonProtocol
+import io.github.reinno.UserRegistryActor.ActionPerformed
 
 trait JsonSupport extends SprayJsonSupport {
 
-  import DefaultJsonProtocol._
+  import spray.json.DefaultJsonProtocol._
 
   implicit val userJsonFormat = jsonFormat3(User)
   implicit val usersJsonFormat = jsonFormat1(Users)

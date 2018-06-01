@@ -1,29 +1,56 @@
-lazy val akkaHttpVersion = "10.1.1"
-lazy val akkaVersion    = "2.5.12"
-lazy val jaegerVersion = "0.28.0"
-lazy val sprayServerV = "1.3.1"
 
-lazy val root = (project in file(".")).
-  settings(
+lazy val global = project
+  .in(file("."))
+  .settings(settings)
+  .aggregate(
+    client,
+    akkahttpexample
+  )
+
+lazy val client = project
+  .settings(
+    version := "0.1",
     inThisBuild(List(
       organization    := "io.github.reinno",
       scalaVersion    := "2.11.6"
     )),
     name := "akka-jaeger-client",
-    libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http-xml"        % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
-
-      "io.jaegertracing"  %  "jaeger-core"          % jaegerVersion,
-
-      "io.spray"          %% "spray-can"            % sprayServerV,
-      "io.spray"          %% "spray-routing-shapeless2" %   sprayServerV,
-
-      "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
-      "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
-      "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion     % Test,
-      "org.scalatest"     %% "scalatest"            % "3.0.1"         % Test
-    )
+    settings,
+    libraryDependencies ++= Dependencies.commonDependencies
   )
+
+lazy val akkahttpexample = project
+  .settings(
+    version := "0.1",
+    inThisBuild(List(
+      organization    := "io.github.reinno",
+      scalaVersion    := "2.11.6"
+    )),
+    name := "akka-http-jaeger-example",
+    settings,
+    libraryDependencies ++= Dependencies.akkahttpExampleDependencies
+  )
+
+
+lazy val compilerOptions = Seq(
+  "-unchecked",
+  "-feature",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
+  "-language:postfixOps",
+  "-deprecation",
+  "-encoding",
+  "utf8"
+)
+
+lazy val commonSettings = Seq(
+  scalacOptions ++= compilerOptions,
+  resolvers ++= Seq(
+    "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository",
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snapshots")
+  )
+)
+
+lazy val settings = commonSettings

@@ -27,11 +27,9 @@ trait SprayTraceDirectives extends TraceSupport {
   }
 
   def withTrace: Directive0 =
-    mapInnerRoute {
-      inner ⇒
-        ctx ⇒
-          getSpan(ctx)
-          inner(ctx)
+    mapInnerRoute { inner ⇒ ctx ⇒
+      getSpan(ctx)
+      inner(ctx)
     }
 
   def withTraceCtx: Directive1[TraceContext] = new Directive1[TraceContext] {

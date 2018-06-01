@@ -1,10 +1,9 @@
-package io.github.reinno.examples.akkahttp
+package io.github.reinno
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import io.github.reinno.{ TraceConfig, TraceConfigLocal }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ Matchers, WordSpec }
 

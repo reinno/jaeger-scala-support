@@ -1,4 +1,4 @@
-package io.github.reinno.examples.akkahttp
+package io.github.reinno
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
@@ -10,8 +10,7 @@ import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
-import io.github.reinno.AkkaHttpTraceDirectives
-import io.github.reinno.examples.akkahttp.UserRegistryActor._
+import io.github.reinno.UserRegistryActor._
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
