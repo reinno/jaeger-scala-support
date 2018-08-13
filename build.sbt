@@ -6,7 +6,7 @@ lazy val global = project
 
 lazy val client = project
   .settings(
-    version := "0.1",
+    version := "0.1.1",
     name := "akka-jaeger-client",
     settings,
     libraryDependencies ++= Dependencies.commonDependencies

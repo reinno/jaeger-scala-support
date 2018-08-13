@@ -1,7 +1,6 @@
 package io.github.reinno
 
 import akka.util.Timeout
-
 import org.json4s.{ DefaultFormats, Formats }
 import spray.http.StatusCodes._
 import spray.httpx.Json4sSupport
@@ -18,7 +17,7 @@ trait Routes extends HttpService with Json4sSupport with SprayTraceDirectives {
   override val traceConfig: TraceConfig = TraceConfigLocal("SprayTraceExample")
   implicit val timeout = Timeout(5 seconds)
 
-  val spraysampleRoute: Route = withTrace {
+  val spraySampleRoute: Route = withTrace {
     path("entity") {
       get {
         complete(List(Foo("foo1"), Foo("foo2")))

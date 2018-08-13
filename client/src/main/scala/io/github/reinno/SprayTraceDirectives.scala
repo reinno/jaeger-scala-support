@@ -28,15 +28,15 @@ trait SprayTraceDirectives extends TraceSupport {
 
   def withTrace: Directive0 =
     mapInnerRoute { inner ⇒ ctx ⇒
-      getSpan(ctx)
-      inner(ctx)
+      val (_, ctxNew) = getSpan(ctx)
+      inner(ctxNew)
     }
 
   def withTraceCtx: Directive1[TraceContext] = new Directive1[TraceContext] {
     override def happly(f: shapeless.::[TraceContext, shapeless.HNil] => Route): Route = {
       ctx ⇒
-        val span: Span = getSpan(ctx)
-        f(TraceContext(tracer, span, traceConfig) :: HNil)(ctx)
+        val (span, ctxNew) = getSpan(ctx)
+        f(TraceContext(tracer, span, traceConfig) :: HNil)(ctxNew)
     }
   }
 
@@ -55,7 +55,7 @@ trait SprayTraceDirectives extends TraceSupport {
       .map(spanBuilder.asChildOf).getOrElse(spanBuilder)
       .start()
 
-    ctx.withHttpResponseMapped {
+    val ctxNew = ctx.withHttpResponseMapped {
       rsp =>
         span
           .setTag(ExtTags.HTTP_RESPONSE.getKey, rsp.entity.asString)
@@ -63,7 +63,7 @@ trait SprayTraceDirectives extends TraceSupport {
         span.finish()
         rsp
     }
-    span
+    (span, ctxNew)
   }
 }
 

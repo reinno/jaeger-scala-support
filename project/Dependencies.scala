@@ -24,7 +24,7 @@ object Dependencies {
   )
 
   val clientDependencies: Seq[ModuleID] = Seq (
-    "io.github.reinno"  %% "akka-jaeger-client"   % "0.1"
+    "io.github.reinno"  %% "akka-jaeger-client"   % "0.1.1"
   )
 
   val akkahttpExampleDependencies: Seq[ModuleID] = commonDependencies ++ clientDependencies ++ Seq (
