@@ -11,6 +11,7 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import io.github.reinno.UserRegistryActor._
+import io.opentracing.tag.{ StringTag, Tags }
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -25,8 +26,9 @@ trait UserRoutes extends JsonSupport with AkkaHttpTraceDirectives {
   def userRegistryActor: ActorRef
 
   implicit lazy val timeout = Timeout(5.seconds)
+  val tags: Map[StringTag, String] = Map(ExtTags.VERSION -> "0.1", Tags.COMPONENT -> "sampleRoute")
 
-  lazy val userRoutes: Route = withTraceCtx {
+  lazy val userRoutes: Route = withTraceCtx(tags) {
     traceCtx =>
       pathPrefix("users") {
         concat(

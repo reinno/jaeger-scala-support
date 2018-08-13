@@ -17,18 +17,27 @@ trait Routes extends HttpService with Json4sSupport with SprayTraceDirectives {
   override val traceConfig: TraceConfig = TraceConfigLocal("SprayTraceExample")
   implicit val timeout = Timeout(5 seconds)
 
-  val spraySampleRoute: Route = withTrace {
-    path("entity") {
-      get {
-        complete(List(Foo("foo1"), Foo("foo2")))
-      } ~ post {
-        respondWithStatus(Created) {
-          entity(as[Foo]) { someObject =>
-            doCreate(someObject)
+  val spraySampleRoute: Route = withTraceCtx() {
+    traceCtx =>
+      {
+        path("entity") {
+          get {
+            complete {
+              val span = traceCtx.tracer.buildSpan("get entity")
+                .asChildOf(traceCtx.span).start()
+              val result = List(Foo("foo1"), Foo("foo2"))
+              span.finish
+              result
+            }
+          } ~ post {
+            respondWithStatus(Created) {
+              entity(as[Foo]) { someObject =>
+                doCreate(someObject)
+              }
+            }
           }
         }
       }
-    }
   }
 
   def doCreate[T](foo: Foo) = {

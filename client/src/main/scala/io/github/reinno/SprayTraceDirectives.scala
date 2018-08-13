@@ -6,7 +6,7 @@ import io.opentracing.Span
 import io.opentracing.Tracer.SpanBuilder
 import io.opentracing.propagation.Format.Builtin.HTTP_HEADERS
 import io.opentracing.propagation.TextMapExtractAdapter
-import io.opentracing.tag.Tags
+import io.opentracing.tag.{ StringTag, Tags }
 import shapeless.HNil
 import spray.http.HttpHeader
 import spray.routing._
@@ -18,24 +18,29 @@ trait SprayTraceDirectives extends TraceSupport {
 
   import spray.routing.directives.BasicDirectives._
 
-  def getSpanBuilder(ctx: RequestContext): SpanBuilder = {
-    tracer.buildSpan(ctx.request.uri.path.toString())
+  private def getSpanBuilder(ctx: RequestContext, customTags: Map[StringTag, String]): SpanBuilder = {
+    val spanBuilder = tracer.buildSpan(ctx.request.uri.path.toString())
       .withTag(Tags.SPAN_KIND.getKey, Tags.SPAN_KIND_SERVER)
       .withTag(Tags.COMPONENT.getKey, "Router")
       .withTag(Tags.HTTP_METHOD.getKey, ctx.request.method.value)
       .withTag(ExtTags.HTTP_REQUEST.getKey, ctx.request.entity.toString)
+
+    customTags.foldLeft(spanBuilder) {
+      case (builder, (tag, value)) =>
+        builder.withTag(tag.getKey, value)
+    }
   }
 
-  def withTrace: Directive0 =
+  def withTrace(customTags: Map[StringTag, String] = Map.empty): Directive0 =
     mapInnerRoute { inner ⇒ ctx ⇒
-      val (_, ctxNew) = getSpan(ctx)
+      val (_, ctxNew) = getSpan(ctx, customTags)
       inner(ctxNew)
     }
 
-  def withTraceCtx: Directive1[TraceContext] = new Directive1[TraceContext] {
+  def withTraceCtx(customTags: Map[StringTag, String] = Map.empty): Directive1[TraceContext] = new Directive1[TraceContext] {
     override def happly(f: shapeless.::[TraceContext, shapeless.HNil] => Route): Route = {
       ctx ⇒
-        val (span, ctxNew) = getSpan(ctx)
+        val (span, ctxNew) = getSpan(ctx, customTags)
         f(TraceContext(tracer, span, traceConfig) :: HNil)(ctxNew)
     }
   }
@@ -48,8 +53,8 @@ trait SprayTraceDirectives extends TraceSupport {
     }
   }
 
-  private def getSpan(ctx: RequestContext) = {
-    val spanBuilder = getSpanBuilder(ctx)
+  private def getSpan(ctx: RequestContext, customTags: Map[StringTag, String]) = {
+    val spanBuilder = getSpanBuilder(ctx, customTags)
     val parentCtx = getParentSpanContext(ctx)
     val span = parentCtx
       .map(spanBuilder.asChildOf).getOrElse(spanBuilder)

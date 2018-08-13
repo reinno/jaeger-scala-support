@@ -8,6 +8,7 @@ object Dependencies {
   lazy val sprayVersion = "1.3.1"
   lazy val json4sVersion = "3.5.4"
   lazy val scalaTestV = "3.0.1"
+  lazy val clientV = "0.1.3"
 
   val commonDependencies: Seq[ModuleID] = Seq(
     "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
@@ -24,7 +25,7 @@ object Dependencies {
   )
 
   val clientDependencies: Seq[ModuleID] = Seq (
-    "io.github.reinno"  %% "akka-jaeger-client"   % "0.1.1"
+    "io.github.reinno"  %% "akka-jaeger-client"   % clientV
   )
 
   val akkahttpExampleDependencies: Seq[ModuleID] = commonDependencies ++ clientDependencies ++ Seq (

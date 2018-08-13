@@ -30,3 +30,9 @@ sbt "project akkahttpexample" run
 ```bash
 sbt "project sprayexample" run
 ```
+
+
+### test example
+```bash
+curl localhost:9001/users 
+```
