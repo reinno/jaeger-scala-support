@@ -8,7 +8,7 @@ object Dependencies {
   lazy val sprayVersion = "1.3.1"
   lazy val json4sVersion = "3.5.4"
   lazy val scalaTestV = "3.0.1"
-  lazy val clientV = "0.1.3"
+  lazy val clientV = "0.1.4"
 
   val commonDependencies: Seq[ModuleID] = Seq(
     "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,

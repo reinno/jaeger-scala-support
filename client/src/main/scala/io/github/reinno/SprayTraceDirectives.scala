@@ -2,7 +2,6 @@ package io.github.reinno
 
 import java.util.Collections
 
-import io.opentracing.Span
 import io.opentracing.Tracer.SpanBuilder
 import io.opentracing.propagation.Format.Builtin.HTTP_HEADERS
 import io.opentracing.propagation.TextMapExtractAdapter
@@ -21,9 +20,9 @@ trait SprayTraceDirectives extends TraceSupport {
   private def getSpanBuilder(ctx: RequestContext, customTags: Map[StringTag, String]): SpanBuilder = {
     val spanBuilder = tracer.buildSpan(ctx.request.uri.path.toString())
       .withTag(Tags.SPAN_KIND.getKey, Tags.SPAN_KIND_SERVER)
-      .withTag(Tags.COMPONENT.getKey, "Router")
+      .withTag(Tags.COMPONENT.getKey, "Route")
       .withTag(Tags.HTTP_METHOD.getKey, ctx.request.method.value)
-      .withTag(ExtTags.HTTP_REQUEST.getKey, ctx.request.entity.toString)
+      .withTag(ExtTags.HTTP_REQUEST.getKey, ctx.request.entity.asString)
 
     customTags.foldLeft(spanBuilder) {
       case (builder, (tag, value)) =>
