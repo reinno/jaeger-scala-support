@@ -19,20 +19,23 @@ docker run -d -e \
 ### publish client to local
 ```bash
 sbt "project client" publishLocal
+sbt "project akka-http-client" publishLocal
+sbt "project spray-client" publishLocal
 ```
 
 ### start example A(akka-http)
 ```bash
-sbt "project akkahttpexample" run
+sbt "project akka-http-example" run
 ```
 
 ### start example B(spray)
 ```bash
-sbt "project sprayexample" run
+sbt "project spray-example" run
 ```
 
 
 ### test example
 ```bash
-curl localhost:9001/users 
+curl localhost:9001/users
+curl localhost:9002/users
 ```

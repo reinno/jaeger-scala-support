@@ -8,19 +8,10 @@ object Dependencies {
   lazy val sprayVersion = "1.3.1"
   lazy val json4sVersion = "3.5.4"
   lazy val scalaTestV = "3.0.1"
-  lazy val clientV = "0.1.4"
+  lazy val clientV = "0.1.5.1"
 
   val commonDependencies: Seq[ModuleID] = Seq(
-    "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-http-xml"        % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
-
-    "io.spray"          %% "spray-can"            % sprayVersion,
-    "io.spray"          %% "spray-routing-shapeless2" % sprayVersion,
-    "org.json4s"        %% "json4s-native"        % json4sVersion,
     "io.jaegertracing"  %  "jaeger-core"          % jaegerVersion,
-
     "org.scalatest"     %% "scalatest"            % scalaTestV      % Test
   )
 
@@ -28,14 +19,30 @@ object Dependencies {
     "io.github.reinno"  %% "akka-jaeger-client"   % clientV
   )
 
-  val akkahttpExampleDependencies: Seq[ModuleID] = commonDependencies ++ clientDependencies ++ Seq (
+  val akkaHttpClientDependencies: Seq[ModuleID] = commonDependencies ++ clientDependencies ++ Seq (
+    "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-http-xml"        % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-stream"          % akkaVersion
+  )
+
+  val akkaHttpExampleDependencies: Seq[ModuleID] = commonDependencies ++ Seq (
+    "io.github.reinno"  %% "akka-http-jaeger-client" % clientV,
     "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
     "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
     "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion     % Test
   )
 
-  val sprayExampleDependencies: Seq[ModuleID] = commonDependencies ++ clientDependencies ++ Seq (
+  val sprayClientDependencies: Seq[ModuleID] = commonDependencies ++ clientDependencies ++ Seq (
+    "io.spray"          %% "spray-can"            % sprayVersion,
+    "io.spray"          %% "spray-routing-shapeless2" % sprayVersion,
+    "org.json4s"        %% "json4s-native"        % json4sVersion
+  )
+
+  val sprayExampleDependencies: Seq[ModuleID] = commonDependencies ++ Seq (
     //"io.spray"          %% "spray-routing"        % sprayVersion,
+    "com.typesafe.akka" %% "akka-actor"           % akkaVersion,
+    "io.github.reinno"  %% "spray-jaeger-client"  % clientV,
     "io.spray"          %% "spray-httpx"          % sprayVersion,
     "io.spray"          %% "spray-testkit"        % sprayVersion     % Test
   )

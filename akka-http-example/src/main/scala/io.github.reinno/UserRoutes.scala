@@ -26,9 +26,9 @@ trait UserRoutes extends JsonSupport with AkkaHttpTraceDirectives {
   def userRegistryActor: ActorRef
 
   implicit lazy val timeout = Timeout(5.seconds)
-  val tags: Map[StringTag, String] = Map(ExtTags.VERSION -> "0.1", Tags.COMPONENT -> "sampleRoute")
+  val customTags: Map[StringTag, String] = Map(ExtTags.VERSION -> "0.1", Tags.COMPONENT -> "sampleRoute")
 
-  lazy val userRoutes: Route = withTraceCtx(tags) {
+  lazy val userRoutes: Route = withTraceCtx(customTags) {
     traceCtx =>
       pathPrefix("users") {
         concat(
