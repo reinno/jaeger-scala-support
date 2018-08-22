@@ -1,9 +1,62 @@
+jaeger-scala-support provide trace feature support for scala frameworks via [Jaeger](https://www.jaegertracing.io/)
+
+
+## sbt usage
+```scala
+"io.github.reinno" %% "akka-jaeger-client" % <latest-version>
+```
+## Integrations
+### Akka-Http
+
+simple case
+```scala
+import io.github.reinno.AkkaHttpTraceDirectives
+
+trait ExampleRoutes extends AkkaHttpTraceDirectives {
+  override implicit val exec: ExecutionContext = system.dispatcher
+  
+  val exampleRoutes: Route = withTrace() {
+    pathPrefix("hello") {
+      pathEnd {
+        get {
+          complete("hello world")
+        }
+      }
+    }  
+  }
+}
+```
+
+complete case
+```scala
+import io.github.reinno.AkkaHttpTraceDirectives
+
+trait ExampleRoutes extends AkkaHttpTraceDirectives {
+  override implicit val exec: ExecutionContext = system.dispatcher
+  override protected lazy val tracer: Tracer = TraceSupport.defaultTracer("example")
+  
+  val exampleRoutes: Route = withTraceContext() {
+    traceCtx => {
+      pathPrefix("hellow") {
+        pathEnd {
+          get {
+            complete("hello world")
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+
+
 ## start example
 ### prerequest
 install docker
 
 ### start jaeger locally
-``` bash
+```bash
 docker run -d -e \
   COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
   -p 5775:5775/udp \
@@ -39,3 +92,6 @@ sbt "project spray-example" run
 curl localhost:9001/users
 curl localhost:9002/users
 ```
+
+### check dashboard
+open http://localhost:16686/search check traces

@@ -9,8 +9,8 @@ lazy val global = project
     `spray-client`,
     `spray-example`)
 
-val `scalaVersion2.11` = "2.11.8"
-val `scalaVersion2.12` = "2.12.4"
+val `scalaVersion2.11` = "2.11.12"
+val `scalaVersion2.12` = "2.12.6"
 lazy val client = project
   .settings(
     version := Dependencies.clientV,

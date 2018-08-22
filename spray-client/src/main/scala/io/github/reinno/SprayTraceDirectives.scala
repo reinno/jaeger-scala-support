@@ -1,3 +1,20 @@
+/*
+ * Copyright 2018 the jaeger scala support contributors. See AUTHORS for more details.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package io.github.reinno
 
 import java.util.Collections
@@ -20,7 +37,8 @@ trait SprayTraceDirectives extends TraceSupport {
   private def getSpanBuilder(ctx: RequestContext, customTags: Map[StringTag, String]): SpanBuilder = {
     val spanBuilder = tracer.buildSpan(ctx.request.uri.path.toString())
       .withTag(Tags.SPAN_KIND.getKey, Tags.SPAN_KIND_SERVER)
-      .withTag(Tags.COMPONENT.getKey, "Route")
+      .withTag(Tags.COMPONENT.getKey, "HttpRoute")
+      .withTag(Tags.HTTP_URL.getKey, ctx.request.uri.toString)
       .withTag(Tags.HTTP_METHOD.getKey, ctx.request.method.value)
       .withTag(ExtTags.HTTP_REQUEST.getKey, ctx.request.entity.asString)
 

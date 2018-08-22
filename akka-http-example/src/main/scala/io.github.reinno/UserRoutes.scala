@@ -1,3 +1,20 @@
+/*
+ * Copyright 2018 the jaeger scala support contributors. See AUTHORS for more details.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package io.github.reinno
 
 import akka.actor.{ ActorRef, ActorSystem }
@@ -31,43 +48,38 @@ trait UserRoutes extends JsonSupport with AkkaHttpTraceDirectives {
   lazy val userRoutes: Route = withTraceCtx(customTags) {
     traceCtx =>
       pathPrefix("users") {
-        concat(
-          pathEnd {
-            concat(
-              get {
-                val users: Future[Users] =
-                  (userRegistryActor ? GetUsers(traceCtx)).mapTo[Users]
-                complete(users)
-              },
-              post {
-                entity(as[User]) { user =>
-                  val userCreated: Future[ActionPerformed] =
-                    (userRegistryActor ? CreateUser(user)).mapTo[ActionPerformed]
-                  onSuccess(userCreated) { performed =>
-                    log.info("Created user [{}]: {}", user.name, performed.description)
-                    complete((StatusCodes.Created, performed))
-                  }
-                }
-              })
-          },
-          path(Segment) { name =>
-            concat(
-              get {
-                val maybeUser: Future[Option[User]] =
-                  (userRegistryActor ? GetUser(name)).mapTo[Option[User]]
-                rejectEmptyResponse {
-                  complete(maybeUser)
-                }
-              },
-              delete {
-                val userDeleted: Future[ActionPerformed] =
-                  (userRegistryActor ? DeleteUser(name)).mapTo[ActionPerformed]
-                onSuccess(userDeleted) { performed =>
-                  log.info("Deleted user [{}]: {}", name, performed.description)
-                  complete((StatusCodes.OK, performed))
-                }
-              })
-          })
+        pathEnd {
+          get {
+            val users: Future[Users] =
+              (userRegistryActor ? GetUsers(traceCtx)).mapTo[Users]
+            complete(users)
+          } ~ post {
+            entity(as[User]) { user =>
+              val userCreated: Future[ActionPerformed] =
+                (userRegistryActor ? CreateUser(user)).mapTo[ActionPerformed]
+              onSuccess(userCreated) { performed =>
+                log.info("Created user [{}]: {}", user.name, performed.description)
+                complete((StatusCodes.Created, performed))
+              }
+            }
+          }
+        } ~ path(Segment) { name =>
+          get {
+            val maybeUser: Future[Option[User]] =
+              (userRegistryActor ? GetUser(name)).mapTo[Option[User]]
+            rejectEmptyResponse {
+              complete(maybeUser)
+            }
+          } ~ delete {
+            val userDeleted: Future[ActionPerformed] =
+              (userRegistryActor ? DeleteUser(name)).mapTo[ActionPerformed]
+            onSuccess(userDeleted) { performed =>
+              log.info("Deleted user [{}]: {}", name, performed.description)
+              complete((StatusCodes.OK, performed))
+            }
+          }
+
+        }
       }
   }
 
